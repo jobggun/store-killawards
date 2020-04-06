@@ -21,6 +21,7 @@ new g_filters[MAX_FILTERS][Filter];
 new g_filterCount;
 
 new g_points_kill;
+new g_points_assist;
 new g_suicide;
 new g_points_teamkill;
 new bool:g_enable_message_per_kill;
@@ -70,6 +71,7 @@ LoadConfig()
 	}
 
 	g_points_kill = KvGetNum(kv, "points_kill", 2);
+	g_points_assist = KvGetNum(kv, "points_assist", 1);
 	g_suicide = KvGetNum(kv, "points_suicide", -1);
 	g_points_teamkill = KvGetNum(kv, "points_teamkill", -1);
 	g_enable_message_per_kill = bool:KvGetNum(kv, "enable_message_per_kill", 0);
@@ -117,6 +119,7 @@ public Action:Event_PlayerDeath(Handle:event, const String:name[], bool:dontBroa
 {
 	new client_died = GetClientOfUserId(GetEventInt(event, "userid"));
 	new client_killer = GetClientOfUserId(GetEventInt(event, "attacker"));
+	new client_assister = GetClientOfUserId(GetEventInt(event, "assister"));
 
 	// ignore invalid clients or fake clients (bots)
 	if (client_killer <= 0 || IsFakeClient(client_killer))
@@ -157,6 +160,21 @@ public Action:Event_PlayerDeath(Handle:event, const String:name[], bool:dontBroa
 	if (points != 0)
 	{
 		GiveCreditsToClient(client_killer, points);
+		if (g_enable_message_per_kill)
+		{
+			PrintToChat(client_killer, "%s%t", STORE_PREFIX, "Received Credits Kill", points, g_currencyName, client_died);
+		}
+	}
+	
+	if (client_assister <= 0 || client_assister > MaxClients || !IsClientInGame(client_assister) || IsFakeClient(client_assister))
+	{
+		return Plugin_Continue;
+	}
+	
+	points = Calculate(event, g_points_assist);
+	if (points != 0)
+	{
+		GiveCreditsToClient(client_assister, points);
 		if (g_enable_message_per_kill)
 		{
 			PrintToChat(client_killer, "%s%t", STORE_PREFIX, "Received Credits Kill", points, g_currencyName, client_died);
