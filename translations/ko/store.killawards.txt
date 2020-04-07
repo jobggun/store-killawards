@@ -1,0 +1,27 @@
+"Phrases"
+{
+
+	"Received Credits Suicide"
+	{
+		"#format"			"{1:d},{2:s}"
+		"ko"				"자살로 {1} {2} 을/를 획득하였습니다!"
+	}
+
+	"Received Credits Kill"
+	{
+		"#format"			"{1:d},{2:s},{3:N}"
+		"ko"				"{3} 플레이어를 죽여서 {1} {2} 을/를 획득하였습니다."
+	}
+	
+	"Received Credits Assist"
+	{
+		"#format"			"{1:d},{2:s},{3:N}"
+		"ko"				"{3} 플레이어의 처치 도움으로 {1} {2} 을/를 획득하였습니다."
+	}
+
+	"Received Credits TeamKill"
+	{
+		"#format"			"{1:d},{2:s},{3:N}"
+		"ko"				"{3} 플레이어를 팀킬하여 {1} {2} 을/를 획득하였습니다."
+	}
+}

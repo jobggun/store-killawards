@@ -117,6 +117,7 @@ LoadConfig()
 
 public Action:Event_PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
 {
+	
 	new client_died = GetClientOfUserId(GetEventInt(event, "userid"));
 	new client_killer = GetClientOfUserId(GetEventInt(event, "attacker"));
 	new client_assister = GetClientOfUserId(GetEventInt(event, "assister"));
@@ -126,6 +127,20 @@ public Action:Event_PlayerDeath(Handle:event, const String:name[], bool:dontBroa
 	{
 		return Plugin_Continue;
 	}
+
+	if (client_assister > 0 && client_assister <= MaxClients && IsClientInGame(client_assister) && !IsFakeClient(client_assister))
+	{
+		new points = Calculate(event, g_points_assist);
+		if (points != 0)
+		{
+			GiveCreditsToClient(client_assister, points);
+			if (g_enable_message_per_kill)
+			{
+				PrintToChat(client_assister, "%s%t", STORE_PREFIX, "Received Credits Assist", points, g_currencyName, client_died);
+			}
+		}
+	}
+	
 
 	// suicides
 	if (client_killer == client_died) 
@@ -160,21 +175,6 @@ public Action:Event_PlayerDeath(Handle:event, const String:name[], bool:dontBroa
 	if (points != 0)
 	{
 		GiveCreditsToClient(client_killer, points);
-		if (g_enable_message_per_kill)
-		{
-			PrintToChat(client_killer, "%s%t", STORE_PREFIX, "Received Credits Kill", points, g_currencyName, client_died);
-		}
-	}
-	
-	if (client_assister <= 0 || client_assister > MaxClients || !IsClientInGame(client_assister) || IsFakeClient(client_assister))
-	{
-		return Plugin_Continue;
-	}
-	
-	points = Calculate(event, g_points_assist);
-	if (points != 0)
-	{
-		GiveCreditsToClient(client_assister, points);
 		if (g_enable_message_per_kill)
 		{
 			PrintToChat(client_killer, "%s%t", STORE_PREFIX, "Received Credits Kill", points, g_currencyName, client_died);
